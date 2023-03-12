@@ -1,28 +1,24 @@
 import React, { useState } from "react";
 
 function App() {
-  const [hasAccount, setHasAccount] = useState(false);
-  const updateFormState = () => {
-    const newLocal = !hasAccount;
-    setHasAccount(newLocal);
+  const [user, setUser] = useState(false);
+  const updateUser = () => {
+    setUser(!user);
   };
-
   return (
-    <div className="grid h-screen place-items-center bg-blue-200">
-      <div className="bg-white p-8">
-        {hasAccount ? (
-          <Login switchForm={updateFormState} />
-        ) : (
-          <Signup switchForm={updateFormState} />
-        )}
-      </div>
-    </div>
+    <>
+      {user ? (
+        <Homepage updateUser={updateUser} />
+      ) : (
+        <Login updateUser={updateUser} />
+      )}
+    </>
   );
 }
 
 export default App;
 
-function Login({ switchForm }) {
+function SignIn({ switchForm, updateUser }) {
   const handleLogin = (event) => {
     event.preventDefault();
     const {
@@ -30,7 +26,8 @@ function Login({ switchForm }) {
       password: { value: password },
       saveInfo: { checked: saveInfo },
     } = event.target;
-    console.log({ username, password, saveInfo });
+    console.log("Login detail: ", { username, password, saveInfo });
+    updateUser();
   };
   return (
     <form className="flex w-96 flex-col gap-4" onSubmit={handleLogin}>
@@ -69,7 +66,7 @@ function Login({ switchForm }) {
   );
 }
 
-function Signup({ switchForm }) {
+function Register({ switchForm, updateUser }) {
   const [password, setPassword] = useState("");
   const handleSignup = (event) => {
     event.preventDefault();
@@ -79,7 +76,13 @@ function Signup({ switchForm }) {
       password: { value: password },
       confirmPassword: { value: confirmPassword },
     } = event.target;
-    console.log({ fullName, username, password, confirmPassword });
+    console.log("Login detail: ", {
+      fullName,
+      username,
+      password,
+      confirmPassword,
+    });
+    updateUser();
   };
   return (
     <form className="flex w-96 flex-col gap-4" onSubmit={handleSignup}>
@@ -129,5 +132,33 @@ function Signup({ switchForm }) {
         </a>
       </p>
     </form>
+  );
+}
+
+function Login({ updateUser }) {
+  const [hasAccount, setHasAccount] = useState(true);
+  const updateFormState = () => {
+    const newLocal = !hasAccount;
+    setHasAccount(newLocal);
+  };
+  return (
+    <div className="grid h-screen place-items-center bg-blue-200">
+      <div className="bg-white p-8">
+        {hasAccount ? (
+          <SignIn switchForm={updateFormState} updateUser={updateUser} />
+        ) : (
+          <Register switchForm={updateFormState} updateUser={updateUser} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Homepage({ updateUser }) {
+  return (
+    <div>
+      <h1>Logged in</h1>
+      <button onClick={updateUser}>Logout</button>
+    </div>
   );
 }
