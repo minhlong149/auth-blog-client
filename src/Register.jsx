@@ -5,13 +5,13 @@ export function Register({ switchForm, updateUser }) {
   const handleSignup = (event) => {
     event.preventDefault();
     const {
-      fullName: { value: fullName },
+      email: { value: email },
       username: { value: username },
       password: { value: password },
       confirmPassword: { value: confirmPassword },
     } = event.target;
     const loginDetail = {
-      fullName,
+      email,
       username,
       password,
       confirmPassword,
@@ -22,13 +22,13 @@ export function Register({ switchForm, updateUser }) {
   return (
     <form className="flex w-96 flex-col gap-4" onSubmit={handleSignup}>
       <div className=" flex justify-between items-center gap-2">
-        <label>Full name:</label>
-        <input type="text" name="fullName" required />
-      </div>
-
-      <div className=" flex justify-between items-center gap-2">
         <label>Username:</label>
         <input type="text" name="username" required />
+      </div>
+
+      <div className="flex justify-between items-center gap-2">
+        <label>Email:</label>
+        <input type="text" name="email" required />
       </div>
 
       <div className="flex justify-between items-center gap-2">

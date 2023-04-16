@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Homepage } from "./Homepage";
 import { Login } from "./Login";
 
@@ -15,25 +15,48 @@ function App() {
         return;
       }
 
+      // handle create new user
+      if (user.confirmPassword) {
+        const response = await fetch("http://localhost:3000/v1/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        });
+
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        const returnedUser = await response.json();
+        console.log("Create new user", returnedUser);
+
+        // login automatically after create new user
+      }
+
       // !! handle login - update fetch url
-      const returnedUser = await fetch("https://example.com/profile", {
+      const response = await fetch("http://localhost:3000/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: user,
+        body: JSON.stringify(user),
       });
 
-      if (!returnedUser) throw new Error("Wrong credentials");
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
 
+      const returnedUser = await response.json();
       setUser(returnedUser);
 
       user.saveInfo &&
         window.localStorage.setItem("loggedUser", JSON.stringify(user));
 
-      console.log(`Logged ${user ? "in" : "out"} successful`);
+      console.log(`Logged ${user ? "in" : "out"} successful: `, returnedUser);
     } catch (error) {
-      setMessage("Invalid");
+      setMessage(error.message);
       setTimeout(() => {
         setMessage("");
       }, 3000);
