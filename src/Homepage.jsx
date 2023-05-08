@@ -2,9 +2,20 @@ import React, { useState } from "react";
 
 export function Homepage({ user, updateUser }) {
   const [money, setMoney] = useState(0);
-  const addMoney = () => {
-    // TODO: send token to the server
-    setMoney(money + Math.floor(Math.random() * 10) * 1000);
+
+  const addMoney = async () => {
+    // add jwt to header
+    const url = `http://localhost:3000/v1/user/${user._id}`;
+    const res = await fetch(url, {
+      headers: {
+        token: `Bearer ${user.accessToken}`,
+      },
+    });
+    console.log(await res.json());
+    if (res.ok) {
+      // const data = await res.json();
+      setMoney(money + Math.floor(Math.random() * 10) * 1000);
+    }
   };
 
   return (
